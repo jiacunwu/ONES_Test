@@ -106,12 +106,12 @@ def create_org(mail=''):
         f.write('\n')
 
 
-branch = 'P1069'
+branch = 'master'
 dev_base_url = f'https://devapi.myones.net/project/{branch}'
 database = 'project_' + branch.lower()
 
 if __name__ == '__main__':
     # create_org()
-    # create_pending('trial')
-    create_org()
+    create_pending('trial')
+    # create_org()
     # get_phone_code(13902995544)

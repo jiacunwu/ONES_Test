@@ -7,7 +7,7 @@ import json
 
 
 def send_message(message, member_list):
-    url = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=569464bd-e522-4a8a-82a8-294c963b4595'
+    url = send_message_url
     headers = {'Content-Type': 'application/json'}
     data = {
         "msgtype": "text",
@@ -220,6 +220,8 @@ def build_private(branch, tag_list):
                      [])
 
 
+# 提醒机器人的url
+send_message_url = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=569464bd-e522-4a8a-82a8-294c963b4595'
 # tag名称和构建参数名称映射，目前这几个是常用的，没有的自己加。。。
 change = {'project-web': 'projectWebBranch',
           'project-api': 'projectApiBranch',
@@ -236,4 +238,4 @@ jenkins_token_cd = '116c13ead74879ca807a992f2b605ca1aa'
 
 if __name__ == '__main__':
     # 分支名和需要打包的组件
-    build_private('P1069', ['project-web', 'project-api', 'audit-log-sync'])
+    build_private('P6869', ['project-web', 'project-api', 'audit-log-sync'])

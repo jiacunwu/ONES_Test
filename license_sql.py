@@ -129,11 +129,11 @@ license_type_list = {
     "流程自动化": 13
 }
 
-database = 'project_p3063'
+database = 'project_master'
 
 if __name__ == '__main__':
     # select('6njBbZNy')
-    set_expire_time('6njBbZNy', 0)
+    set_expire_time('32FcyJbF', 0)
     # set_multi_team('AtFhxSdE')
     # set_prise_type('6njBbZNy')
     # run_sql("update license set ")
