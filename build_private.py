@@ -155,7 +155,7 @@ def build_create_test_env(branch, version, config='--'):
     project_name = f'create-test-env'
     build_num_1 = server.get_job_info(project_name)['builds'][0]['number']
 
-    parameters = {'instance_name': branch,
+    parameters = {'instance_name': branch[:6],
                   'version': version,
                   'onesConfigureInitExtraParams': config}
 
