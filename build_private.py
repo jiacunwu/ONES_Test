@@ -94,8 +94,8 @@ def build_image(branch, tag_list: list):
                   'baseImageVersion': 'v1.0.19',
                   'onesDataCollectorBranch': 'master',
                   'plugin_service_proxy': 'master',
-                  'mysqlOperator': 'S1092',
-                  'kafkaBackup': 'kafka-backup-dev-v0.0.5'
+                  'mysqlOperator': 'master',
+                  'kafkaBackup': 'master'
                   }
     for i in tag_list:
         parameters[change[i]] = branch
@@ -238,4 +238,4 @@ jenkins_token_cd = '116c13ead74879ca807a992f2b605ca1aa'
 
 if __name__ == '__main__':
     # 分支名和需要打包的组件
-    build_private('P6869', ['project-web', 'project-api', 'audit-log-sync'])
+    build_private('hotfix-20221018', ['project-web'])

@@ -31,7 +31,7 @@ def create_pending(edition='free', preview='preview3', language='zh', mail=''):
         preview_base_url = ''
     time1 = time.strftime('%m%d%H%M%S', time.localtime(time.time()))
     if mail == '':
-        mail = str(time1) + '@ones.ai'
+        mail = str(time1) + '@ones.cn'
     phone = '1' + str(time1)
     json1 = {
         "phone": f"+86{phone}"
@@ -66,4 +66,4 @@ def create_pending(edition='free', preview='preview3', language='zh', mail=''):
 if __name__ == '__main__':
     # get_phone_code(13902995544, 'preview3')
     for i in range(5):
-        create_pending('free', 'preview3', 'zh')
+        create_pending('free', 'preview1', 'zh')
