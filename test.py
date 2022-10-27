@@ -28,6 +28,8 @@ def book_time():
                 if time.strftime('%M', time.localtime(time.time())) == '10':
                     send_message('点外卖了', ['@all'])
                     print(time.strftime('%H:%M', time.localtime(time.time())))
+                    if time.strftime('%A', time.localtime(time.time())) == 'Friday':
+                        send_message('周五了，记得写周报', ['@吴家存'])
                     time.sleep(600)
                 else:
                     print(time.strftime('%H:%M', time.localtime(time.time())))
@@ -36,6 +38,8 @@ def book_time():
                 if time.strftime('%M', time.localtime(time.time())) == '10':
                     send_message('登记工时', ['@all'])
                     print(time.strftime('%H:%M', time.localtime(time.time())))
+                    if time.strftime('%A', time.localtime(time.time())) == 'Friday':
+                        send_message('周五了，记得写周报', ['@吴家存'])
                     time.sleep(600)
                 else:
                     print(time.strftime('%H:%M', time.localtime(time.time())))

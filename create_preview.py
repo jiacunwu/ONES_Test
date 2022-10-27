@@ -65,5 +65,5 @@ def create_pending(edition='free', preview='preview3', language='zh', mail=''):
 
 if __name__ == '__main__':
     # get_phone_code(13902995544, 'preview3')
-    for i in range(5):
+    for i in range(1):
         create_pending('free', 'preview1', 'zh')
