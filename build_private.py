@@ -13,8 +13,7 @@ def send_message(message, member_list):
         "msgtype": "text",
         "text": {
             "content": message,
-            "mentioned_list": member_list,
-            "mentioned_mobile_list": [send_member]
+            "mentioned_list": member_list
         }
     }
     re1 = requests.post(url=url, data=json.dumps(data), headers=headers)
@@ -270,7 +269,7 @@ def build_private(branch, tag_list, is_send_message=True):
     if len(SUCCESS_list) != len(tag_list):
         print(f'打包失败：\n{FAILURE_list}')
         if is_send_message:
-            send_message(f'打包失败： \n{FAILURE_list}', [])
+            send_message(f'打包失败： \n{FAILURE_list}', [jenkins_user_name[:-8]])
         return
     print(f'SUCCESS： {SUCCESS_list}')
 
@@ -279,7 +278,7 @@ def build_private(branch, tag_list, is_send_message=True):
         print(f'构建镜像失败')
         if is_send_message:
             send_message(f'构建镜像失败: \nhttps://marsdev-ci.myones.net/view/build-private-test-env/job/build-image-v2/',
-                         [])
+                         [jenkins_user_name[:-8]])
         return
     print(f'SUCCESS build-image-v2 version: {version}')
 
@@ -288,7 +287,7 @@ def build_private(branch, tag_list, is_send_message=True):
         print(f'构建安装包失败')
         if is_send_message:
             send_message(f'构建安装包失败: \nhttps://marsdev-ci.myones.net/view/BUILD_PACKAGE/job/build-install-pak/',
-                         [])
+                         [jenkins_user_name[:-8]])
         return
     print(f'{success} build-install-pak')
 
@@ -297,18 +296,17 @@ def build_private(branch, tag_list, is_send_message=True):
         print(f'创建测试实例失败')
         if is_send_message:
             send_message(f'创建测试实例失败: \nhttps://marsdev-ci.myones.net/view/AUTO_DEPLOY/job/create-test-env/',
-                         [])
+                         [jenkins_user_name[:-8]])
     else:
         print('打包成功')
         if is_send_message:
-            send_message(f'{branch}私有部署打包成功', [])
+            send_message(f'{branch}私有部署打包成功', [jenkins_user_name[:-8]])
             send_message(f'用完记得删除实例： \nhttps://marsdev-ci.myones.net/view/AUTO_DEPLOY/job/remove-test-env/',
-                         [])
+                         [jenkins_user_name[:-8]])
 
 
-# 提醒机器人的url和提醒人员
+# 提醒机器人的url和提醒人员,可通过is_send_message关闭
 send_message_url = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=569464bd-e522-4a8a-82a8-294c963b4595'
-send_member = '13902995544'
 # tag名称和构建参数名称映射，目前这几个是常用的，没有的自己加。。。
 change = {'project-web': 'projectWebBranch',
           'project-api': 'projectApiBranch',
@@ -325,5 +323,5 @@ jenkins_token_cd = '116c13ead74879ca807a992f2b605ca1aa'
 
 if __name__ == '__main__':
     # build_private('master', [])
-    # 分支名和需要打包的组件
-    build_private('P3069', ['project-web', 'project-api'])
+    # 分支名和需要打包的组件，是否机器人通知开关
+    build_private('P3069', ['project-web', 'project-api'], is_send_message=True)
