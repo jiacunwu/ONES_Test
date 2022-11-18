@@ -13,7 +13,8 @@ def send_message(message, member_list):
         "msgtype": "text",
         "text": {
             "content": message,
-            "mentioned_list": member_list
+            "mentioned_list": member_list,
+            "mentioned_mobile_list": [send_member]
         }
     }
     re1 = requests.post(url=url, data=json.dumps(data), headers=headers)
@@ -34,10 +35,20 @@ def build_package(branch, tar):
 
     if build_num_1 == 0:
         while True:
-            build_new = server.get_job_info(project_name)['builds']
+            while True:
+                try:
+                    build_new = server.get_job_info(project_name)['builds']
+                    break
+                except BaseException:
+                    time.sleep(10)
             if len(build_new) > 0:
-                build_num = server.get_job_info(project_name)['builds'][0]['number']
-                success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+                while True:
+                    try:
+                        build_num = server.get_job_info(project_name)['builds'][0]['number']
+                        success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+                        break
+                    except BaseException:
+                        time.sleep(10)
                 if success == 'SUCCESS' or success == 'FAILURE':
                     break
                 else:
@@ -46,9 +57,19 @@ def build_package(branch, tar):
                 time.sleep(10)
     else:
         while True:
-            build_num = server.get_job_info(project_name)['builds'][0]['number']
+            while True:
+                try:
+                    build_num = server.get_job_info(project_name)['builds'][0]['number']
+                    break
+                except BaseException:
+                    time.sleep(10)
             if build_num != build_num_1:
-                success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+                while True:
+                    try:
+                        success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+                        break
+                    except BaseException:
+                        time.sleep(10)
                 if success == 'SUCCESS' or success == 'FAILURE':
                     break
                 else:
@@ -64,10 +85,20 @@ def build_package(branch, tar):
 
 def build_image(branch, tag_list: list):
     os.environ['PYTHONHTTPSVERIFY'] = '0'
-    server = jenkins.Jenkins('https://marsdev-ci.myones.net/', jenkins_user_name, jenkins_token_ci)
+    while True:
+        try:
+            server = jenkins.Jenkins('https://marsdev-ci.myones.net/', jenkins_user_name, jenkins_token_ci)
+            break
+        except:
+            time.sleep(10)
 
     project_name = f'build-image-v2'
-    build_num_1 = server.get_job_info(project_name)['builds'][0]['number']
+    while True:
+        try:
+            build_num_1 = server.get_job_info(project_name)['builds'][0]['number']
+            break
+        except:
+            time.sleep(10)
 
     parameters = {'projectApiBranch': 'master',
                   'projectWebBranch': 'master',
@@ -99,20 +130,40 @@ def build_image(branch, tag_list: list):
                   }
     for i in tag_list:
         parameters[change[i]] = branch
-    server.build_job(project_name, parameters)
     while True:
-        build_num = server.get_job_info(project_name)['builds'][0]['number']
+        try:
+            server.build_job(project_name, parameters)
+            break
+        except:
+            time.sleep(10)
+    while True:
+        while True:
+            try:
+                build_num = server.get_job_info(project_name)['builds'][0]['number']
+                break
+            except:
+                time.sleep(10)
         if build_num != build_num_1:
             break
         else:
             time.sleep(10)
     while True:
-        success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+        while True:
+            try:
+                success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+                break
+            except:
+                time.sleep(10)
         if success == 'SUCCESS' or success == 'FAILURE':
             break
         else:
             time.sleep(10)
-    version = str(server.get_build_console_output(project_name, build_num)).split('\n')[22][-9:]
+    while True:
+        try:
+            version = str(server.get_build_console_output(project_name, build_num)).split('\n')[22][-9:]
+            break
+        except:
+            time.sleep(10)
     if success == 'SUCCESS':
         return version
     else:
@@ -121,25 +172,40 @@ def build_image(branch, tag_list: list):
 
 def build_install_pak(version):
     os.environ['PYTHONHTTPSVERIFY'] = '0'
-    server = jenkins.Jenkins('https://marsdev-ci.myones.net/', jenkins_user_name, jenkins_token_ci)
+    while True:
+        try:
+            server = jenkins.Jenkins('https://marsdev-ci.myones.net/', jenkins_user_name, jenkins_token_ci)
 
-    project_name = f'build-install-pak'
-    build_num_1 = server.get_job_info(project_name)['builds'][0]['number']
+            project_name = f'build-install-pak'
+            build_num_1 = server.get_job_info(project_name)['builds'][0]['number']
 
-    parameters = {'parameters': 'master',
-                  'version': version,
-                  'certificate': 'master_cn'}
+            parameters = {'parameters': 'master',
+                          'version': version,
+                          'certificate': 'master_cn'}
 
-    server.build_job(project_name, parameters)
+            server.build_job(project_name, parameters)
+            break
+        except:
+            time.sleep(10)
 
     while True:
-        build_num = server.get_job_info(project_name)['builds'][0]['number']
+        while True:
+            try:
+                build_num = server.get_job_info(project_name)['builds'][0]['number']
+                break
+            except:
+                time.sleep(10)
         if build_num != build_num_1:
             break
         else:
             time.sleep(10)
     while True:
-        success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+        while True:
+            try:
+                success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+                break
+            except:
+                time.sleep(10)
         if success == 'SUCCESS' or success == 'FAILURE':
             break
         else:
@@ -149,25 +215,40 @@ def build_install_pak(version):
 
 
 def build_create_test_env(branch, version, config='--'):
-    os.environ['PYTHONHTTPSVERIFY'] = '0'
-    server = jenkins.Jenkins('https://marsdev-ci.myones.net/', jenkins_user_name, jenkins_token_ci)
-
-    project_name = f'create-test-env'
-    build_num_1 = server.get_job_info(project_name)['builds'][0]['number']
-
-    parameters = {'instance_name': branch[:6],
-                  'version': version,
-                  'onesConfigureInitExtraParams': config}
-
-    server.build_job(project_name, parameters)
     while True:
-        build_num = server.get_job_info(project_name)['builds'][0]['number']
+        try:
+            os.environ['PYTHONHTTPSVERIFY'] = '0'
+            server = jenkins.Jenkins('https://marsdev-ci.myones.net/', jenkins_user_name, jenkins_token_ci)
+
+            project_name = f'create-test-env'
+            build_num_1 = server.get_job_info(project_name)['builds'][0]['number']
+
+            parameters = {'instance_name': branch[:6],
+                          'version': version,
+                          'onesConfigureInitExtraParams': config}
+
+            server.build_job(project_name, parameters)
+            break
+        except:
+            time.sleep(10)
+    while True:
+        while True:
+            try:
+                build_num = server.get_job_info(project_name)['builds'][0]['number']
+                break
+            except:
+                time.sleep(10)
         if build_num != build_num_1:
             break
         else:
             time.sleep(10)
     while True:
-        success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+        while True:
+            try:
+                success = str(server.get_build_console_output(project_name, build_num))[-8:-1]
+                break
+            except:
+                time.sleep(10)
         if success == 'SUCCESS' or success == 'FAILURE':
             break
         else:
@@ -180,7 +261,7 @@ SUCCESS_list = []
 FAILURE_list = []
 
 
-def build_private(branch, tag_list):
+def build_private(branch, tag_list, is_send_message=True):
     for tag in tag_list:
         thread1 = threading.Thread(target=build_package, args=(branch, tag))
         thread1.start()
@@ -188,40 +269,46 @@ def build_private(branch, tag_list):
         time.sleep(10)
     if len(SUCCESS_list) != len(tag_list):
         print(f'打包失败：\n{FAILURE_list}')
-        send_message(f'打包失败： \n{FAILURE_list}', ['@all'])
+        if is_send_message:
+            send_message(f'打包失败： \n{FAILURE_list}', [])
         return
     print(f'SUCCESS： {SUCCESS_list}')
 
     version = build_image(branch, tag_list)
     if not version:
         print(f'构建镜像失败')
-        send_message(f'构建镜像失败: \nhttps://marsdev-ci.myones.net/view/build-private-test-env/job/build-image-v2/',
-                     ['@all'])
+        if is_send_message:
+            send_message(f'构建镜像失败: \nhttps://marsdev-ci.myones.net/view/build-private-test-env/job/build-image-v2/',
+                         [])
         return
     print(f'SUCCESS build-image-v2 version: {version}')
 
     success = build_install_pak(version)
     if success != 'SUCCESS':
         print(f'构建安装包失败')
-        send_message(f'构建安装包失败: \nhttps://marsdev-ci.myones.net/view/BUILD_PACKAGE/job/build-install-pak/',
-                     ['@all'])
+        if is_send_message:
+            send_message(f'构建安装包失败: \nhttps://marsdev-ci.myones.net/view/BUILD_PACKAGE/job/build-install-pak/',
+                         [])
         return
     print(f'{success} build-install-pak')
 
     success = build_create_test_env(branch, version)
     if success != 'SUCCESS':
         print(f'创建测试实例失败')
-        send_message(f'创建测试实例失败: \nhttps://marsdev-ci.myones.net/view/AUTO_DEPLOY/job/create-test-env/',
-                     ['@all'])
+        if is_send_message:
+            send_message(f'创建测试实例失败: \nhttps://marsdev-ci.myones.net/view/AUTO_DEPLOY/job/create-test-env/',
+                         [])
     else:
         print('打包成功')
-        send_message(f'{branch}私有部署打包成功', ['@all'])
-        send_message(f'用完记得删除实例： \nhttps://marsdev-ci.myones.net/view/AUTO_DEPLOY/job/remove-test-env/',
-                     [])
+        if is_send_message:
+            send_message(f'{branch}私有部署打包成功', [])
+            send_message(f'用完记得删除实例： \nhttps://marsdev-ci.myones.net/view/AUTO_DEPLOY/job/remove-test-env/',
+                         [])
 
 
-# 提醒机器人的url
+# 提醒机器人的url和提醒人员
 send_message_url = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=569464bd-e522-4a8a-82a8-294c963b4595'
+send_member = '13902995544'
 # tag名称和构建参数名称映射，目前这几个是常用的，没有的自己加。。。
 change = {'project-web': 'projectWebBranch',
           'project-api': 'projectApiBranch',
@@ -237,5 +324,6 @@ jenkins_token_ci = '11e7b38a13794c4ddd39a62fb82460fd4e'
 jenkins_token_cd = '116c13ead74879ca807a992f2b605ca1aa'
 
 if __name__ == '__main__':
+    # build_private('master', [])
     # 分支名和需要打包的组件
-    build_private('hotfix-20221018', ['project-web'])
+    build_private('P3069', ['project-web', 'project-api'])
